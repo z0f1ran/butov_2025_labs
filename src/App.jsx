@@ -1,62 +1,40 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './App.css'
-import { getPosts, createPost, updatePost, deletePost } from './api'
 import PostForm from './components/PostForm'
 import PostItem from './components/PostItem'
 import LoadingSpinner from './components/LoadingSpinner'
 import ErrorMessage from './components/ErrorMessage'
+import UsersList from './components/UsersList'
+import { usePosts, useCreatePost, useUpdatePost, useDeletePost } from './hooks/usePosts'
 
 function App() {
-  const [posts, setPosts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
   const [successMessage, setSuccessMessage] = useState('')
 
-  // GET-запрос: Загрузка постов при монтировании компонента
-  useEffect(() => {
-    fetchPosts()
-  }, [])
-
-  const fetchPosts = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const data = await getPosts()
-      // Ограничиваем до 10 постов для удобства просмотра
-      setPosts(data.slice(0, 10))
-    } catch (err) {
-      setError(err)
-    } finally {
-      setLoading(false)
-    }
-  }
+  // Используем React Query вместо useEffect + useState
+  const { data: posts = [], isLoading, error, refetch } = usePosts()
+  
+  // Мутации с оптимистичными обновлениями
+  const createPostMutation = useCreatePost()
+  const updatePostMutation = useUpdatePost()
+  const deletePostMutation = useDeletePost()
 
   // POST-запрос: Создание нового поста
   const handleCreatePost = async (newPost) => {
     try {
-      setLoading(true)
-      const createdPost = await createPost(newPost)
-      // Добавляем новый пост в начало списка
-      setPosts([createdPost, ...posts])
+      await createPostMutation.mutateAsync(newPost)
       showSuccessMessage('Пост успешно создан!')
     } catch (err) {
-      setError(err)
-    } finally {
-      setLoading(false)
+      console.error('Failed to create post:', err)
     }
   }
 
   // PUT-запрос: Обновление поста
   const handleUpdatePost = async (id, updatedData) => {
     try {
-      setLoading(true)
-      const updatedPost = await updatePost(id, updatedData)
-      setPosts(posts.map(post => post.id === id ? updatedPost : post))
+      await updatePostMutation.mutateAsync({ id, data: updatedData })
       showSuccessMessage('Пост успешно обновлен!')
     } catch (err) {
-      setError(err)
-    } finally {
-      setLoading(false)
+      console.error('Failed to update post:', err)
     }
   }
 
@@ -67,14 +45,10 @@ function App() {
     }
 
     try {
-      setLoading(true)
-      await deletePost(id)
-      setPosts(posts.filter(post => post.id !== id))
+      await deletePostMutation.mutateAsync(id)
       showSuccessMessage('Пост успешно удален!')
     } catch (err) {
-      setError(err)
-    } finally {
-      setLoading(false)
+      console.error('Failed to delete post:', err)
     }
   }
 
@@ -83,11 +57,16 @@ function App() {
     setTimeout(() => setSuccessMessage(''), 3000)
   }
 
+  // Проверяем, выполняется ли какая-либо мутация
+  const isMutating = createPostMutation.isPending || 
+                     updatePostMutation.isPending || 
+                     deletePostMutation.isPending
+
   return (
     <div className="app">
       <header className="app-header">
         <h1>📝 Управление постами</h1>
-        <p className="subtitle">Лабораторная работа: HTTP-методы в React</p>
+        <p className="subtitle">Лабораторная работа №2: React Query</p>
       </header>
 
       <div className="container">
@@ -97,18 +76,25 @@ function App() {
           </div>
         )}
 
+        {/* Список пользователей с автообновлением */}
+        <UsersList />
+
         <PostForm onSubmit={handleCreatePost} />
 
-        {error && <ErrorMessage error={error} onRetry={fetchPosts} />}
+        {error && <ErrorMessage error={error} onRetry={refetch} />}
 
-        {loading && posts.length === 0 ? (
+        {isLoading && posts.length === 0 ? (
           <LoadingSpinner />
         ) : (
           <div className="posts-section">
             <div className="posts-header">
               <h2>Список постов ({posts.length})</h2>
-              <button onClick={fetchPosts} className="btn-refresh">
-                🔄 Обновить
+              <button 
+                onClick={() => refetch()} 
+                className="btn-refresh"
+                disabled={isLoading || isMutating}
+              >
+                🔄 Обновить {(isLoading || isMutating) && '...'}
               </button>
             </div>
             <div className="posts-list">

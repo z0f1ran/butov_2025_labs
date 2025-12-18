@@ -76,4 +76,37 @@ export const deletePost = async (id) => {
   }
 };
 
+// GET-запрос для получения пользователей
+export const getUsers = async () => {
+  try {
+    const response = await api.get('/users');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+};
+
+// GET-запрос для получения пользователя по ID
+export const getUserById = async (id) => {
+  try {
+    const response = await api.get(`/users/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching user ${id}:`, error);
+    throw error;
+  }
+};
+
+// GET-запрос для получения комментариев поста
+export const getPostComments = async (postId) => {
+  try {
+    const response = await api.get(`/posts/${postId}/comments`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching comments for post ${postId}:`, error);
+    throw error;
+  }
+};
+
 export default api;
