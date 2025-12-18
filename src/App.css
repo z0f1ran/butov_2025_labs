@@ -86,15 +86,20 @@
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.1s;
+  transition: background-color 0.3s, transform 0.1s, opacity 0.3s;
 }
 
-.btn-refresh:hover {
+.btn-refresh:hover:not(:disabled) {
   background: var(--primary-hover);
 }
 
-.btn-refresh:active {
+.btn-refresh:active:not(:disabled) {
   transform: scale(0.98);
+}
+
+.btn-refresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .posts-list {

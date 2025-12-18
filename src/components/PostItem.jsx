@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './PostItem.css';
 
 function PostItem({ post, onDelete, onUpdate }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(post.title);
   const [editedBody, setEditedBody] = useState(post.body);
+
+  // Обновляем локальное состояние когда пост меняется
+  useEffect(() => {
+    setEditedTitle(post.title);
+    setEditedBody(post.body);
+  }, [post.title, post.body]);
 
   const handleUpdate = () => {
     onUpdate(post.id, {

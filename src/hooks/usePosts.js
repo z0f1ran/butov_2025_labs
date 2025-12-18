@@ -36,33 +36,19 @@ export function useCreatePost() {
   return useMutation({
     mutationFn: createPost,
     
-    // Оптимистичное обновление
-    onMutate: async (newPost) => {
-      // Отменяем текущие запросы для списка постов
-      await queryClient.cancelQueries({ queryKey: postKeys.lists() });
-
-      // Сохраняем предыдущее состояние для rollback
-      const previousPosts = queryClient.getQueryData(postKeys.lists());
-
-      // Оптимистично обновляем кэш
+    // При успехе обновляем кэш с реальными данными
+    onSuccess: (newPost) => {
+      // Добавляем новый пост в начало списка
       queryClient.setQueryData(postKeys.lists(), (old) => {
         if (!old) return [newPost];
-        return [{ ...newPost, id: Date.now() }, ...old];
+        // Заменяем временный пост (если был) на реальный
+        return [newPost, ...old.filter(post => post.id !== newPost.id)];
       });
-
-      return { previousPosts };
     },
 
-    // При ошибке откатываем изменения
-    onError: (err, newPost, context) => {
-      if (context?.previousPosts) {
-        queryClient.setQueryData(postKeys.lists(), context.previousPosts);
-      }
-    },
-
-    // После завершения (успех или ошибка) инвалидируем кэш
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: postKeys.lists() });
+    // При ошибке показываем сообщение
+    onError: (err) => {
+      console.error('Failed to create post:', err);
     },
   });
 }

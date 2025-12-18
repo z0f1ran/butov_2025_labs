@@ -27,10 +27,21 @@
   font-size: 0.875rem;
   cursor: pointer;
   user-select: none;
+  padding: 6px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  transition: background-color 0.2s;
+}
+
+.auto-refresh-toggle:hover {
+  background: #e9ecef;
 }
 
 .auto-refresh-toggle input[type="checkbox"] {
   cursor: pointer;
+  width: 16px;
+  height: 16px;
 }
 
 .last-updated {
