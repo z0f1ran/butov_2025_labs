@@ -1,26 +1,19 @@
-import { useState } from 'react';
-import { useUsers } from '../hooks/useUsers';
+import { useUsers } from '../store/hooks/useUsers';
 import './UsersList.css';
 
 /**
  * Компонент для демонстрации:
- * - Автоматического кэширования
- * - Автоматического обновления (refetchInterval)
- * - Select для оптимизации ре-рендеров
+ * - Автоматического кэширования через Redux
+ * - Автоматического обновления (polling)
+ * - Redux DevTools
  */
 function UsersList() {
-  const [autoRefresh, setAutoRefresh] = useState(false);
+  const { users, loading, error, autoRefresh, toggleAutoRefresh } = useUsers();
 
-  // Используем select для получения только необходимых данных
-  const { data: users = [], isLoading, error, dataUpdatedAt } = useUsers({
-    // Автоматическое обновление каждые 30 секунд (если включено)
-    refetchInterval: autoRefresh ? 30000 : false,
-    
-    // Оптимизация: получаем только первые 5 пользователей
-    select: (data) => data.slice(0, 5),
-  });
+  // Получаем последнее время обновления из timestamp (можно добавить в slice)
+  const lastUpdated = new Date().toLocaleTimeString();
 
-  if (isLoading) {
+  if (loading && users.length === 0) {
     return (
       <div className="users-list">
         <div className="users-header">
@@ -37,7 +30,7 @@ function UsersList() {
         <div className="users-header">
           <h3>👥 Пользователи</h3>
         </div>
-        <div className="error-text">Ошибка загрузки пользователей</div>
+        <div className="error-text">Ошибка: {error}</div>
       </div>
     );
   }
@@ -50,15 +43,15 @@ function UsersList() {
           <input
             type="checkbox"
             checked={autoRefresh}
-            onChange={(e) => setAutoRefresh(e.target.checked)}
+            onChange={toggleAutoRefresh}
           />
           <span>Авто-обновление (30с)</span>
         </label>
       </div>
       
-      {dataUpdatedAt && (
+      {autoRefresh && (
         <div className="last-updated">
-          Обновлено: {new Date(dataUpdatedAt).toLocaleTimeString()}
+          Обновлено: {lastUpdated}
         </div>
       )}
 

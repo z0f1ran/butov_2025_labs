@@ -1,72 +1,31 @@
-import { useState } from 'react'
 import './App.css'
 import PostForm from './components/PostForm'
 import PostItem from './components/PostItem'
 import LoadingSpinner from './components/LoadingSpinner'
 import ErrorMessage from './components/ErrorMessage'
 import UsersList from './components/UsersList'
-import { usePosts, useCreatePost, useUpdatePost, useDeletePost } from './hooks/usePosts'
+import { usePosts } from './store/hooks/usePosts'
+import { useUI } from './store/hooks/useUI'
 
 function App() {
-  const [successMessage, setSuccessMessage] = useState('')
+  const {
+    posts,
+    loading,
+    error,
+    count,
+    createPost,
+    updatePost,
+    deletePost,
+    refetch,
+  } = usePosts();
 
-  // Используем React Query вместо useEffect + useState
-  const { data: posts = [], isLoading, error, refetch } = usePosts()
-  
-  // Мутации с оптимистичными обновлениями
-  const createPostMutation = useCreatePost()
-  const updatePostMutation = useUpdatePost()
-  const deletePostMutation = useDeletePost()
-
-  // POST-запрос: Создание нового поста
-  const handleCreatePost = async (newPost) => {
-    try {
-      await createPostMutation.mutateAsync(newPost)
-      showSuccessMessage('Пост успешно создан!')
-    } catch (err) {
-      console.error('Failed to create post:', err)
-    }
-  }
-
-  // PUT-запрос: Обновление поста
-  const handleUpdatePost = async (id, updatedData) => {
-    try {
-      await updatePostMutation.mutateAsync({ id, data: updatedData })
-      showSuccessMessage('Пост успешно обновлен!')
-    } catch (err) {
-      console.error('Failed to update post:', err)
-    }
-  }
-
-  // DELETE-запрос: Удаление поста
-  const handleDeletePost = async (id) => {
-    if (!window.confirm('Вы уверены, что хотите удалить этот пост?')) {
-      return
-    }
-
-    try {
-      await deletePostMutation.mutateAsync(id)
-      showSuccessMessage('Пост успешно удален!')
-    } catch (err) {
-      console.error('Failed to delete post:', err)
-    }
-  }
-
-  const showSuccessMessage = (message) => {
-    setSuccessMessage(message)
-    setTimeout(() => setSuccessMessage(''), 3000)
-  }
-
-  // Проверяем, выполняется ли какая-либо мутация
-  const isMutating = createPostMutation.isPending || 
-                     updatePostMutation.isPending || 
-                     deletePostMutation.isPending
+  const { successMessage } = useUI();
 
   return (
     <div className="app">
       <header className="app-header">
         <h1>📝 Управление постами</h1>
-        <p className="subtitle">Лабораторная работа №2: React Query</p>
+        <p className="subtitle">Лабораторная работа №3: Redux Toolkit</p>
       </header>
 
       <div className="container">
@@ -79,22 +38,22 @@ function App() {
         {/* Список пользователей с автообновлением */}
         <UsersList />
 
-        <PostForm onSubmit={handleCreatePost} />
+        <PostForm onSubmit={createPost} />
 
-        {error && <ErrorMessage error={error} onRetry={refetch} />}
+        {error && <ErrorMessage error={{ message: error }} onRetry={refetch} />}
 
-        {isLoading && posts.length === 0 ? (
+        {loading && posts.length === 0 ? (
           <LoadingSpinner />
         ) : (
           <div className="posts-section">
             <div className="posts-header">
-              <h2>Список постов ({posts.length})</h2>
+              <h2>Список постов ({count})</h2>
               <button 
-                onClick={() => refetch()} 
+                onClick={refetch} 
                 className="btn-refresh"
-                disabled={isLoading || isMutating}
+                disabled={loading}
               >
-                🔄 Обновить {(isLoading || isMutating) && '...'}
+                🔄 Обновить {loading && '...'}
               </button>
             </div>
             <div className="posts-list">
@@ -102,8 +61,8 @@ function App() {
                 <PostItem
                   key={post.id}
                   post={post}
-                  onDelete={handleDeletePost}
-                  onUpdate={handleUpdatePost}
+                  onDelete={deletePost}
+                  onUpdate={updatePost}
                 />
               ))}
             </div>
