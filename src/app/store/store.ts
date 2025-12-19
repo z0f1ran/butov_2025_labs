@@ -1,0 +1,16 @@
+import { configureStore } from '@reduxjs/toolkit';
+import postsReducer from '@/entities/post/model/postsSlice';
+import usersReducer from '@/entities/user/model/usersSlice';
+import uiReducer from '@/entities/ui/model/uiSlice';
+
+export const store = configureStore({
+  reducer: {
+    posts: postsReducer,
+    users: usersReducer,
+    ui: uiReducer,
+  },
+  devTools: process.env.NODE_ENV !== 'production',
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
