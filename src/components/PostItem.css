@@ -5,7 +5,9 @@
   padding: 20px;
   margin-bottom: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .post-item:hover {
@@ -39,7 +41,8 @@
   color: #757575;
 }
 
-.post-id, .user-id {
+.post-id,
+.user-id {
   padding: 4px 8px;
   background: #f0f0f0;
   border-radius: 4px;
@@ -50,14 +53,19 @@
   gap: 8px;
 }
 
-.btn-edit, .btn-delete, .btn-save, .btn-cancel {
+.btn-edit,
+.btn-delete,
+.btn-save,
+.btn-cancel {
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.1s;
+  transition:
+    background-color 0.3s,
+    transform 0.1s;
 }
 
 .btn-edit {
@@ -96,11 +104,15 @@
   background: #5a6268;
 }
 
-.btn-edit:active, .btn-delete:active, .btn-save:active, .btn-cancel:active {
+.btn-edit:active,
+.btn-delete:active,
+.btn-save:active,
+.btn-cancel:active {
   transform: scale(0.98);
 }
 
-.edit-input, .edit-textarea {
+.edit-input,
+.edit-textarea {
   width: 100%;
   padding: 10px;
   margin-bottom: 12px;
@@ -111,7 +123,8 @@
   box-sizing: border-box;
 }
 
-.edit-input:focus, .edit-textarea:focus {
+.edit-input:focus,
+.edit-textarea:focus {
   outline: none;
   border-color: #646cff;
   box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.1);

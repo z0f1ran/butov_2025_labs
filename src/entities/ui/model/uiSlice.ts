@@ -25,7 +25,7 @@ const uiSlice = createSlice({
     clearErrorMessage: (state) => {
       state.errorMessage = '';
     },
-    
+
     // Управление видимостью формы
     showForm: (state) => {
       state.isFormVisible = true;
@@ -36,7 +36,7 @@ const uiSlice = createSlice({
     toggleForm: (state) => {
       state.isFormVisible = !state.isFormVisible;
     },
-    
+
     // Управление темой
     setTheme: (state, action) => {
       state.theme = action.payload;

@@ -10,12 +10,12 @@ interface PostCardProps {
   isUpdating?: boolean;
 }
 
-export function PostCard({ 
-  post, 
-  onDelete, 
+export function PostCard({
+  post,
+  onDelete,
   onUpdate,
   isDeleting = false,
-  isUpdating = false 
+  isUpdating = false,
 }: PostCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(post.title);
@@ -60,18 +60,10 @@ export function PostCard({
           disabled={isUpdating}
         />
         <div className="button-group">
-          <button 
-            onClick={handleUpdate} 
-            className="btn-save"
-            disabled={isUpdating}
-          >
+          <button onClick={handleUpdate} className="btn-save" disabled={isUpdating}>
             {isUpdating ? 'Сохранение...' : 'Сохранить'}
           </button>
-          <button 
-            onClick={handleCancel} 
-            className="btn-cancel"
-            disabled={isUpdating}
-          >
+          <button onClick={handleCancel} className="btn-cancel" disabled={isUpdating}>
             Отмена
           </button>
         </div>
@@ -88,18 +80,10 @@ export function PostCard({
         <span className="user-id">User: {post.userId}</span>
       </div>
       <div className="button-group">
-        <button 
-          onClick={() => setIsEditing(true)} 
-          className="btn-edit"
-          disabled={isDeleting}
-        >
+        <button onClick={() => setIsEditing(true)} className="btn-edit" disabled={isDeleting}>
           Редактировать
         </button>
-        <button 
-          onClick={() => onDelete(post.id)} 
-          className="btn-delete"
-          disabled={isDeleting}
-        >
+        <button onClick={() => onDelete(post.id)} className="btn-delete" disabled={isDeleting}>
           {isDeleting ? 'Удаление...' : 'Удалить'}
         </button>
       </div>

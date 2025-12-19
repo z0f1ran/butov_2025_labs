@@ -1,2 +1,2 @@
-export { default as postsReducer } from './model/postsSlice';
-export * from './model/postsSlice';
+export { default as postsReducer } from './postsSlice';
+export * from './postsSlice';

@@ -13,7 +13,7 @@ export function PostCreateForm({ onSubmit, isLoading = false }: PostCreateFormPr
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    
+
     if (!title.trim() || !body.trim()) {
       alert('Пожалуйста, заполните все поля!');
       return;

@@ -12,15 +12,12 @@ export const selectPostsError = (state) => state.posts.error;
 export const selectCurrentPost = (state) => state.posts.currentPost;
 
 // Мемоизированный селектор: количество постов
-export const selectPostsCount = createSelector(
-  [selectAllPosts],
-  (posts) => posts.length
-);
+export const selectPostsCount = createSelector([selectAllPosts], (posts) => posts.length);
 
 // Мемоизированный селектор: посты с фильтром по userId
 export const selectPostsByUserId = createSelector(
   [selectAllPosts, (state, userId) => userId],
-  (posts, userId) => posts.filter(post => post.userId === userId)
+  (posts, userId) => posts.filter((post) => post.userId === userId)
 );
 
 // Мемоизированный селектор: поиск постов по тексту
@@ -30,9 +27,7 @@ export const selectFilteredPosts = createSelector(
     if (!searchQuery) return posts;
     const query = searchQuery.toLowerCase();
     return posts.filter(
-      post =>
-        post.title.toLowerCase().includes(query) ||
-        post.body.toLowerCase().includes(query)
+      (post) => post.title.toLowerCase().includes(query) || post.body.toLowerCase().includes(query)
     );
   }
 );
@@ -45,15 +40,11 @@ export const selectCurrentUser = (state) => state.users.currentUser;
 export const selectAutoRefresh = (state) => state.users.autoRefresh;
 
 // Мемоизированный селектор: количество пользователей
-export const selectUsersCount = createSelector(
-  [selectAllUsers],
-  (users) => users.length
-);
+export const selectUsersCount = createSelector([selectAllUsers], (users) => users.length);
 
 // Мемоизированный селектор: имена пользователей
-export const selectUserNames = createSelector(
-  [selectAllUsers],
-  (users) => users.map(user => ({ id: user.id, name: user.name }))
+export const selectUserNames = createSelector([selectAllUsers], (users) =>
+  users.map((user) => ({ id: user.id, name: user.name }))
 );
 
 // UI селекторы
@@ -66,8 +57,8 @@ export const selectTheme = (state) => state.ui.theme;
 export const selectPostsWithUserInfo = createSelector(
   [selectAllPosts, selectAllUsers],
   (posts, users) => {
-    return posts.map(post => {
-      const user = users.find(u => u.id === post.userId);
+    return posts.map((post) => {
+      const user = users.find((u) => u.id === post.userId);
       return {
         ...post,
         userName: user?.name || 'Unknown',

@@ -1,32 +1,38 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { usersApi } from '@/shared/api';
+import type { User } from '@/shared/types';
+
+interface UsersState {
+  items: User[];
+  currentUser: User | null;
+  loading: boolean;
+  error: string | null;
+  autoRefresh: boolean;
+}
 
 // Async Thunks
-export const fetchUsers = createAsyncThunk(
-  'users/fetchUsers',
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await usersApi.getUsers();
-      return data.slice(0, 5); // Ограничиваем до 5 пользователей
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+export const fetchUsers = createAsyncThunk('users/fetchUsers', async (_, { rejectWithValue }) => {
+  try {
+    const data = await usersApi.getUsers();
+    return data.slice(0, 5); // Ограничиваем до 5 пользователей
+  } catch (error) {
+    return rejectWithValue((error as Error).message);
   }
-);
+});
 
 export const fetchUserById = createAsyncThunk(
   'users/fetchUserById',
-  async (userId, { rejectWithValue }) => {
+  async (userId: number, { rejectWithValue }) => {
     try {
       const data = await usersApi.getUserById(userId);
       return data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue((error as Error).message);
     }
   }
 );
 
-const initialState = {
+const initialState: UsersState = {
   items: [],
   currentUser: null,
   loading: false,
@@ -68,7 +74,7 @@ const usersSlice = createSlice({
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload as string;
       });
 
     // Fetch User By ID
@@ -83,17 +89,12 @@ const usersSlice = createSlice({
       })
       .addCase(fetchUserById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload as string;
       });
   },
 });
 
-export const {
-  setCurrentUser,
-  clearCurrentUser,
-  toggleAutoRefresh,
-  setAutoRefresh,
-  clearError,
-} = usersSlice.actions;
+export const { setCurrentUser, clearCurrentUser, toggleAutoRefresh, setAutoRefresh, clearError } =
+  usersSlice.actions;
 
 export default usersSlice.reducer;

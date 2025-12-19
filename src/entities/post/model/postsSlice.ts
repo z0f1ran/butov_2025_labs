@@ -1,56 +1,61 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { postsApi } from '@/shared/api';
+import type { Post, CreatePostDto, UpdatePostDto } from '@/shared/types';
+
+interface PostsState {
+  items: Post[];
+  loading: boolean;
+  error: string | null;
+  currentPost: Post | null;
+}
 
 // Async Thunks для работы с API
-export const fetchPosts = createAsyncThunk(
-  'posts/fetchPosts',
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await postsApi.getPosts();
-      return data.slice(0, 10); // Ограничиваем до 10 постов
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+export const fetchPosts = createAsyncThunk('posts/fetchPosts', async (_, { rejectWithValue }) => {
+  try {
+    const data = await postsApi.getPosts();
+    return data.slice(0, 10); // Ограничиваем до 10 постов
+  } catch (error) {
+    return rejectWithValue((error as Error).message);
   }
-);
+});
 
 export const createPost = createAsyncThunk(
   'posts/createPost',
-  async (postData, { rejectWithValue }) => {
+  async (postData: CreatePostDto, { rejectWithValue }) => {
     try {
       const data = await postsApi.createPost(postData);
       return data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue((error as Error).message);
     }
   }
 );
 
 export const updatePost = createAsyncThunk(
   'posts/updatePost',
-  async ({ id, data }, { rejectWithValue }) => {
+  async ({ id, data }: { id: number; data: UpdatePostDto }, { rejectWithValue }) => {
     try {
       const updatedPost = await postsApi.updatePost(id, data);
       return updatedPost;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue((error as Error).message);
     }
   }
 );
 
 export const deletePost = createAsyncThunk(
   'posts/deletePost',
-  async (postId, { rejectWithValue }) => {
+  async (postId: number, { rejectWithValue }) => {
     try {
       await postsApi.deletePost(postId);
       return postId;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue((error as Error).message);
     }
   }
 );
 
-const initialState = {
+const initialState: PostsState = {
   items: [],
   loading: false,
   error: null,
@@ -77,7 +82,7 @@ const postsSlice = createSlice({
     },
     // Удаление оптимистичного поста при ошибке
     removePostOptimistic: (state, action) => {
-      state.items = state.items.filter(post => post.id !== action.payload);
+      state.items = state.items.filter((post) => post.id !== action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -93,7 +98,7 @@ const postsSlice = createSlice({
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload as string;
       });
 
     // Create Post
@@ -109,7 +114,7 @@ const postsSlice = createSlice({
       })
       .addCase(createPost.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload as string;
       });
 
     // Update Post
@@ -120,14 +125,14 @@ const postsSlice = createSlice({
       })
       .addCase(updatePost.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.items.findIndex(post => post.id === action.payload.id);
+        const index = state.items.findIndex((post) => post.id === action.payload.id);
         if (index !== -1) {
           state.items[index] = action.payload;
         }
       })
       .addCase(updatePost.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload as string;
       });
 
     // Delete Post
@@ -138,11 +143,11 @@ const postsSlice = createSlice({
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = state.items.filter(post => post.id !== action.payload);
+        state.items = state.items.filter((post) => post.id !== action.payload);
       })
       .addCase(deletePost.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload as string;
       });
   },
 });

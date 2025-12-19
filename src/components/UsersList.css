@@ -38,7 +38,7 @@
   background: #e9ecef;
 }
 
-.auto-refresh-toggle input[type="checkbox"] {
+.auto-refresh-toggle input[type='checkbox'] {
   cursor: pointer;
   width: 16px;
   height: 16px;
@@ -62,7 +62,9 @@
   border: 1px solid #e9ecef;
   border-radius: 6px;
   padding: 12px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .user-card:hover {
@@ -88,7 +90,8 @@
   font-style: italic;
 }
 
-.loading-text, .error-text {
+.loading-text,
+.error-text {
   text-align: center;
   padding: 20px;
   color: #757575;

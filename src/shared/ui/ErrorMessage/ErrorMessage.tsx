@@ -8,7 +8,7 @@ interface ErrorMessageProps {
 
 export function ErrorMessage({ error, message, onRetry }: ErrorMessageProps) {
   const errorText = message || error?.message || 'Не удалось загрузить данные. Попробуйте еще раз.';
-  
+
   return (
     <div className="error-container">
       <div className="error-icon">⚠️</div>
