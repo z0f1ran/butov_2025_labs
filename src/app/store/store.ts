@@ -9,7 +9,7 @@ export const store = configureStore({
     users: usersReducer,
     ui: uiReducer,
   },
-  devTools: import.meta.env.DEV,
+  devTools: !!((import.meta as any).env && (import.meta as any).env.DEV),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

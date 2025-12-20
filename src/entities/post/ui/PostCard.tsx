@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { Post, UpdatePostDto } from '@/shared/types';
 import './PostCard.css';
 
@@ -21,10 +21,12 @@ export function PostCard({
   const [editedTitle, setEditedTitle] = useState(post.title);
   const [editedBody, setEditedBody] = useState(post.body);
 
-  useEffect(() => {
+  // Устанавливаем значения полей при переходе в режим редактирования
+  const handleEdit = () => {
     setEditedTitle(post.title);
     setEditedBody(post.body);
-  }, [post.title, post.body]);
+    setIsEditing(true);
+  };
 
   const handleUpdate = () => {
     onUpdate(post.id, {
@@ -80,7 +82,7 @@ export function PostCard({
         <span className="user-id">User: {post.userId}</span>
       </div>
       <div className="button-group">
-        <button onClick={() => setIsEditing(true)} className="btn-edit" disabled={isDeleting}>
+        <button onClick={handleEdit} className="btn-edit" disabled={isDeleting}>
           Редактировать
         </button>
         <button onClick={() => onDelete(post.id)} className="btn-delete" disabled={isDeleting}>

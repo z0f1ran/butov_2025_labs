@@ -1,9 +1,9 @@
 import './App.css';
-import PostForm from './components/PostForm';
-import PostItem from './components/PostItem';
-import LoadingSpinner from './components/LoadingSpinner';
-import ErrorMessage from './components/ErrorMessage';
-import UsersList from './components/UsersList';
+import { PostCreateForm } from '@/features/post-create/ui/PostCreateForm';
+import { PostCard } from '@/entities/post/ui/PostCard';
+import { LoadingSpinner } from '@/shared/ui';
+import { ErrorMessage } from '@/shared/ui';
+import UsersList from '@/entities/user/ui/UsersList';
 import { usePosts } from './store/hooks/usePosts';
 import { useUI } from './store/hooks/useUI';
 
@@ -25,7 +25,7 @@ function App() {
         {/* Список пользователей с автообновлением */}
         <UsersList />
 
-        <PostForm onSubmit={createPost} />
+        <PostCreateForm onSubmit={createPost} />
 
         {error && <ErrorMessage error={{ message: error }} onRetry={refetch} />}
 
@@ -41,7 +41,7 @@ function App() {
             </div>
             <div className="posts-list">
               {posts.map((post) => (
-                <PostItem key={post.id} post={post} onDelete={deletePost} onUpdate={updatePost} />
+                <PostCard key={post.id} post={post} onDelete={deletePost} onUpdate={updatePost} />
               ))}
             </div>
           </div>
