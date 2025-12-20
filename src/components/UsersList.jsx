@@ -40,20 +40,12 @@ function UsersList() {
       <div className="users-header">
         <h3>👥 Пользователей ({users.length})</h3>
         <label className="auto-refresh-toggle">
-          <input
-            type="checkbox"
-            checked={autoRefresh}
-            onChange={toggleAutoRefresh}
-          />
+          <input type="checkbox" checked={autoRefresh} onChange={toggleAutoRefresh} />
           <span>Авто-обновление (30с)</span>
         </label>
       </div>
-      
-      {autoRefresh && (
-        <div className="last-updated">
-          Обновлено: {lastUpdated}
-        </div>
-      )}
+
+      {autoRefresh && <div className="last-updated">Обновлено: {lastUpdated}</div>}
 
       <div className="users-grid">
         {users.map((user) => (

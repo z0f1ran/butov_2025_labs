@@ -2,17 +2,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getUsers, getUserById } from '../../api';
 
 // Async Thunks
-export const fetchUsers = createAsyncThunk(
-  'users/fetchUsers',
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getUsers();
-      return data.slice(0, 5); // Ограничиваем до 5 пользователей
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+export const fetchUsers = createAsyncThunk('users/fetchUsers', async (_, { rejectWithValue }) => {
+  try {
+    const data = await getUsers();
+    return data.slice(0, 5); // Ограничиваем до 5 пользователей
+  } catch (error) {
+    return rejectWithValue(error.message);
   }
-);
+});
 
 export const fetchUserById = createAsyncThunk(
   'users/fetchUserById',
@@ -88,12 +85,7 @@ const usersSlice = createSlice({
   },
 });
 
-export const {
-  setCurrentUser,
-  clearCurrentUser,
-  toggleAutoRefresh,
-  setAutoRefresh,
-  clearError,
-} = usersSlice.actions;
+export const { setCurrentUser, clearCurrentUser, toggleAutoRefresh, setAutoRefresh, clearError } =
+  usersSlice.actions;
 
 export default usersSlice.reducer;

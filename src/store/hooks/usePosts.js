@@ -6,13 +6,7 @@ import {
   selectPostsError,
   selectPostsCount,
 } from '../selectors';
-import {
-  fetchPosts,
-  createPost,
-  updatePost,
-  deletePost,
-  clearError,
-} from '../slices/postsSlice';
+import { fetchPosts, createPost, updatePost, deletePost, clearError } from '../slices/postsSlice';
 import { setSuccessMessage } from '../slices/uiSlice';
 
 /**

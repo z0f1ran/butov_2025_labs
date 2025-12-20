@@ -35,14 +35,14 @@ export function useCreatePost() {
 
   return useMutation({
     mutationFn: createPost,
-    
+
     // При успехе обновляем кэш с реальными данными
     onSuccess: (newPost) => {
       // Добавляем новый пост в начало списка
       queryClient.setQueryData(postKeys.lists(), (old) => {
         if (!old) return [newPost];
         // Заменяем временный пост (если был) на реальный
-        return [newPost, ...old.filter(post => post.id !== newPost.id)];
+        return [newPost, ...old.filter((post) => post.id !== newPost.id)];
       });
     },
 
@@ -61,18 +61,16 @@ export function useUpdatePost() {
 
   return useMutation({
     mutationFn: ({ id, data }) => updatePost(id, data),
-    
+
     onMutate: async ({ id, data }) => {
       await queryClient.cancelQueries({ queryKey: postKeys.lists() });
-      
+
       const previousPosts = queryClient.getQueryData(postKeys.lists());
 
       // Оптимистично обновляем пост в списке
       queryClient.setQueryData(postKeys.lists(), (old) => {
         if (!old) return [];
-        return old.map((post) =>
-          post.id === id ? { ...post, ...data } : post
-        );
+        return old.map((post) => (post.id === id ? { ...post, ...data } : post));
       });
 
       return { previousPosts };
@@ -98,10 +96,10 @@ export function useDeletePost() {
 
   return useMutation({
     mutationFn: deletePost,
-    
+
     onMutate: async (postId) => {
       await queryClient.cancelQueries({ queryKey: postKeys.lists() });
-      
+
       const previousPosts = queryClient.getQueryData(postKeys.lists());
 
       // Оптимистично удаляем пост из списка

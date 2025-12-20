@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './PostItem.css';
 
 function PostItem({ post, onDelete, onUpdate }) {
@@ -6,11 +6,7 @@ function PostItem({ post, onDelete, onUpdate }) {
   const [editedTitle, setEditedTitle] = useState(post.title);
   const [editedBody, setEditedBody] = useState(post.body);
 
-  // Обновляем локальное состояние когда пост меняется
-  useEffect(() => {
-    setEditedTitle(post.title);
-    setEditedBody(post.body);
-  }, [post.title, post.body]);
+  // Значения редактирования устанавливаем при входе в режим редактирования
 
   const handleUpdate = () => {
     onUpdate(post.id, {
@@ -65,7 +61,14 @@ function PostItem({ post, onDelete, onUpdate }) {
         <span className="user-id">User: {post.userId}</span>
       </div>
       <div className="button-group">
-        <button onClick={() => setIsEditing(true)} className="btn-edit">
+        <button
+          onClick={() => {
+            setEditedTitle(post.title);
+            setEditedBody(post.body);
+            setIsEditing(true);
+          }}
+          className="btn-edit"
+        >
           Редактировать
         </button>
         <button onClick={() => onDelete(post.id)} className="btn-delete">

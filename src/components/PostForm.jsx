@@ -7,7 +7,7 @@ function PostForm({ onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!title.trim() || !body.trim()) {
       alert('Пожалуйста, заполните все поля!');
       return;

@@ -1,23 +1,14 @@
-import './App.css'
-import PostForm from './components/PostForm'
-import PostItem from './components/PostItem'
-import LoadingSpinner from './components/LoadingSpinner'
-import ErrorMessage from './components/ErrorMessage'
-import UsersList from './components/UsersList'
-import { usePosts } from './store/hooks/usePosts'
-import { useUI } from './store/hooks/useUI'
+import './App.css';
+import { PostCreateForm } from '@/features/post-create/ui/PostCreateForm';
+import { PostCard } from '@/entities/post/ui/PostCard';
+import { LoadingSpinner } from '@/shared/ui';
+import { ErrorMessage } from '@/shared/ui';
+import UsersList from '@/entities/user/ui/UsersList';
+import { usePosts } from './store/hooks/usePosts';
+import { useUI } from './store/hooks/useUI';
 
 function App() {
-  const {
-    posts,
-    loading,
-    error,
-    count,
-    createPost,
-    updatePost,
-    deletePost,
-    refetch,
-  } = usePosts();
+  const { posts, loading, error, count, createPost, updatePost, deletePost, refetch } = usePosts();
 
   const { successMessage } = useUI();
 
@@ -29,16 +20,12 @@ function App() {
       </header>
 
       <div className="container">
-        {successMessage && (
-          <div className="success-message">
-            ✅ {successMessage}
-          </div>
-        )}
+        {successMessage && <div className="success-message">✅ {successMessage}</div>}
 
         {/* Список пользователей с автообновлением */}
         <UsersList />
 
-        <PostForm onSubmit={createPost} />
+        <PostCreateForm onSubmit={createPost} />
 
         {error && <ErrorMessage error={{ message: error }} onRetry={refetch} />}
 
@@ -48,29 +35,20 @@ function App() {
           <div className="posts-section">
             <div className="posts-header">
               <h2>Список постов ({count})</h2>
-              <button 
-                onClick={refetch} 
-                className="btn-refresh"
-                disabled={loading}
-              >
+              <button onClick={refetch} className="btn-refresh" disabled={loading}>
                 🔄 Обновить {loading && '...'}
               </button>
             </div>
             <div className="posts-list">
-              {posts.map(post => (
-                <PostItem
-                  key={post.id}
-                  post={post}
-                  onDelete={deletePost}
-                  onUpdate={updatePost}
-                />
+              {posts.map((post) => (
+                <PostCard key={post.id} post={post} onDelete={deletePost} onUpdate={updatePost} />
               ))}
             </div>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

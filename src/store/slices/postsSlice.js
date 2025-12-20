@@ -1,18 +1,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getPosts, createPost as apiCreatePost, updatePost as apiUpdatePost, deletePost as apiDeletePost } from '../../api';
+import {
+  getPosts,
+  createPost as apiCreatePost,
+  updatePost as apiUpdatePost,
+  deletePost as apiDeletePost,
+} from '../../api';
 
 // Async Thunks для работы с API
-export const fetchPosts = createAsyncThunk(
-  'posts/fetchPosts',
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getPosts();
-      return data.slice(0, 10); // Ограничиваем до 10 постов
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+export const fetchPosts = createAsyncThunk('posts/fetchPosts', async (_, { rejectWithValue }) => {
+  try {
+    const data = await getPosts();
+    return data.slice(0, 10); // Ограничиваем до 10 постов
+  } catch (error) {
+    return rejectWithValue(error.message);
   }
-);
+});
 
 export const createPost = createAsyncThunk(
   'posts/createPost',
@@ -77,7 +79,7 @@ const postsSlice = createSlice({
     },
     // Удаление оптимистичного поста при ошибке
     removePostOptimistic: (state, action) => {
-      state.items = state.items.filter(post => post.id !== action.payload);
+      state.items = state.items.filter((post) => post.id !== action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -120,7 +122,7 @@ const postsSlice = createSlice({
       })
       .addCase(updatePost.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.items.findIndex(post => post.id === action.payload.id);
+        const index = state.items.findIndex((post) => post.id === action.payload.id);
         if (index !== -1) {
           state.items[index] = action.payload;
         }
@@ -138,7 +140,7 @@ const postsSlice = createSlice({
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = state.items.filter(post => post.id !== action.payload);
+        state.items = state.items.filter((post) => post.id !== action.payload);
       })
       .addCase(deletePost.rejected, (state, action) => {
         state.loading = false;
